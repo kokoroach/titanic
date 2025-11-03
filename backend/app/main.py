@@ -1,20 +1,25 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
-from uvicorn import run
 from typing import AsyncGenerator
+from uvicorn import run
 
-from app.db.database import init_sqlite_db
+
 from app.api.v1.routers import v1_routers
+from app.db.database import init_sqlite_db
+from app.core.logging import logger
 
 
-@asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator:
     """system- and app- related checks before and after FastAPI is ran."""
+    logger.info("Running pre-startup checks before running FastAPI")
     # TODO: Uses SQLite for test purposes
     # Use appropriate DB initialization. In this case, for SQLite
     init_sqlite_db()
+    # TODO:
+    # Run a migration check and update for updated models
     yield
-    # Post-processes including graceful exit
+    logger.info("Shutting down API application...")
+    # Post-process checks including potential graceful exit
 
 
 app = FastAPI(lifespan=lifespan)
