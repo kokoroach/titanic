@@ -3,21 +3,33 @@ from pathlib import Path
 
 CURRENT_DIR = CONFIG_DIR = Path(__file__).resolve()
 
-# Define the API endpoint URL
-upload_api = 'http://localhost:8000/v1/passenger/upload-csv'
-dataset = CURRENT_DIR.parent / "titanic_dataset" / "train.csv"
+PASSENGER_ENDPOINT = 'http://localhost:8000/v1/passenger'
 
 
-try:
-    with open(dataset, 'rb') as f:
-        response = httpx.post(upload_api, files={'file': f})
-        # Check the response
-        if response.status_code == 200:
-            print("Good Response :", response.json())
-        else:
-            print("Bad Response:", response.text)
-except httpx.RequestError as e:
-    print(f"An error occurred during the API request: {e}")
+def test_upload_csv():
+    upload_api = f'{PASSENGER_ENDPOINT}/upload-csv'
+    dataset = CURRENT_DIR.parent / "titanic_dataset" / "train.csv"
+
+    try:
+        with open(dataset, 'rb') as f:
+            response = httpx.post(upload_api, files={'file': f})
+            # Check the response
+            if response.status_code == 200:
+                print("Good Response :", response.json())
+            else:
+                print("Bad Response:", response.text)
+    except httpx.RequestError as e:
+        print(f"An error occurred during the API request: {e}")
+
+
+def test_get_passengers():
+    get_passengers_api = f'{PASSENGER_ENDPOINT}/all'
+    resp = httpx.get(get_passengers_api)
+    print(resp)
+
+
+if __name__ == "__main__":
+    test_get_passengers()
 
 
 
