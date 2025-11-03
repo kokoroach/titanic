@@ -1,12 +1,10 @@
-# from sqlalchemy.dialects.sqlite import insert
-from sqlalchemy import select, insert
 from typing import List
 
+from sqlalchemy import select
+from sqlalchemy.dialects.sqlite import insert
+
 from app.db.models import PassengerModel
-from app.db.database import get_session, Session
-
-
-session = get_session()
+from app.db.database import Session
 
 
 async def bulk_insert_passengers(passengers: List[dict]) -> None:
@@ -18,6 +16,7 @@ async def bulk_insert_passengers(passengers: List[dict]) -> None:
         stmt = insert(PassengerModel).values(passengers)
         stmt = stmt.on_conflict_do_nothing(index_elements=["passenger_id"])
         session.execute(stmt)
+        session.commit()
 
 
 async def get_all_passengers() -> List:

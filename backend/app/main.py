@@ -9,6 +9,7 @@ from app.db.database import init_sqlite_db
 from app.core.logging import logger
 
 
+@asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator:
     """system- and app- related checks before and after FastAPI is ran."""
     logger.info("Running pre-startup checks before running FastAPI")

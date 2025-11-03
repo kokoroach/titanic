@@ -12,7 +12,6 @@ class Base(DeclarativeBase):
 
 engine = create_engine(DATABASE_URL, echo=True)
 Session = sessionmaker(bind=engine)
-session = Session()
 
 
 def init_sqlite_db() -> None:
