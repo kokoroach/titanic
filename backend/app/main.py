@@ -1,12 +1,26 @@
-from asyncio import run
-from core.config import TITANIC_DATASET
-from domain.passenger import Passenger
+from contextlib import asynccontextmanager
+from fastapi import FastAPI
+from uvicorn import run
+
+from app.db.database import init_sqlite_db
+from app.api.v1.routers import v1_routers
 
 
-async def init_dataset():
-    passengers = await Passenger.from_csv(TITANIC_DATASET)
-    print(passengers[0])
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # TODO: Uses SQLITE for test purposes. NOT for production use.
+    # Use appropriate DB initialization
+    init_sqlite_db()
+    yield
+    # Graceful exit
+
+
+app = FastAPI(lifespan=lifespan)
+
+# Setup up versioned API routers
+for router, prefix, tags in v1_routers:
+    app.include_router(router, prefix=prefix, tags=tags)
 
 
 if __name__ == '__main__':
-    run(init_dataset())
+    run(app, host="0.0.0.0", port=8000)

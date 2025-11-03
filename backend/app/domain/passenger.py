@@ -1,53 +1,131 @@
-from csv import DictReader
-from dataclasses import dataclass
-from pathlib import Path
-from typing import List
+from re import compile
+from dataclasses import dataclass, asdict
+
+from app.domain.exceptions import DataValidationError
 
 
 @dataclass
 class Passenger:
     passenger_id: int
     survived: bool
+    title: str
+    first_name: str
+    maiden_name: str
+    last_name: str
+    nickname: str
+    alias: str
+    spouse: str
     p_class: int
-    name: str
     sex: str
     age: float
     sib_sp: int
     par_ch: int
-    ticket: int
+    ticket: str
     fare: float
-    cabin: int
+    cabin: str
     embarked: str
 
     @classmethod
-    async def from_csv(cls, filename: Path) -> List["Passenger"]:
-        """
-        Import passenger dataset from CSV and serialize to a list Passenger
-        dataclass
-        """
-        passengers = []
+    async def _parse_name_field(cls, name) -> dict:
+        first_name = ""
+        first_name_dded = ""
+        maiden_name = ""
+        last_name = ""
+        nickname = ""
+        alias = ""
+        spouse = ""
 
-        with open(filename, mode='r', newline='', encoding='utf-8') as file:
-            # Use DictReader to get each row as a dictionary
-            reader = DictReader(file)
-            for row in reader:
-                try:
-                    passenger = Passenger(
-                        passenger_id=int(row['PassengerId']),
-                        survived=bool(row['Survived']),
-                        p_class=int(row['Pclass']),
-                        name=row['Name'],
-                        sex='m' if row['Sex'] == 'male' else 'f',
-                        age=0 if row['Age'] == '' else float(row['Age']),
-                        sib_sp=int(row['SibSp']),
-                        par_ch=int(row['Parch']),
-                        ticket=row['Ticket'],
-                        fare=float(row['Fare']),
-                        cabin=row['Cabin'],
-                        embarked=row['Embarked'],
-                    )
-                    passengers.append(passenger)
-                except (ValueError, KeyError) as e:
-                    print(f"Error processing row {row}: {e}")
+        last_name, _rest = name.split(", ")
+        title, first_name = _rest.split(". ", 1)
 
-        return passengers
+        # Person has an alias
+        # Example: 'Leeni, Mr. Fahim ("Philip Zenni")'
+        if '("' in first_name:
+            alias_pattern = compile(
+                r'^(?P<first>.+?)\s*\(\s*"(?P<alias>[^"]+)"\s*\)\s*$'
+            )
+            m = alias_pattern.match(first_name)
+
+            first_name = m.group("first")
+            alias = m.group("alias")
+
+        print('first_name after alias', first_name)
+        # Person has spouse
+        # Example: 'Beane, Mrs. Edward (Ethel Clarke)'
+        if "(" in first_name:
+            spouse_pattern = compile(
+                r'^\s*'
+                r'(?:(?P<spouse>[^()]+?)\s*)?'   # text before parentheses
+                r'\((?P<first>[^()]+)\)'         # first parentheses content
+                r'.*$'                           # ignore the rest
+            )
+            m = spouse_pattern.match(first_name)
+
+            spouse = m.group("spouse")
+            first_name = m.group("first")
+
+            try:
+                first_name, maiden_name = first_name.rsplit(" ", 1)
+            except ValueError:
+                # Name inside parenthesis is not a Maiden Name.
+                # Usually an alias
+                pass
+
+        print('first_name after spouse', first_name)
+
+        # Process Nickname
+        # Example: 'O\'Brien, Mrs. Thomas (Johanna "Hannah" Godfrey)'
+        if '"' in first_name:
+            nickname_pattern = compile(
+                r'^(?P<first>.+?)\s*"\s*(?P<nickname>[^"]+)\s*"\s*(?P<rest>.*)?$'
+            )
+            m = nickname_pattern.match(first_name)
+
+            first_name = m.group("first")
+            nickname = m.group("nickname")
+            # The rest of the first name
+            first_name_dded = m.group("rest").strip() if m.group("rest") else ""
+
+        return {
+            "title": title,
+            "first": first_name + " " + first_name_dded,
+            "maiden": maiden_name,
+            "last": last_name,
+            "nickname": nickname,
+            "alias": alias,
+            "spouse": spouse,
+        }
+
+    @classmethod
+    async def from_dict(cls, details: dict) -> "Passenger":
+        """Import passenger from a JSON-serialized dict"""
+        try:
+            _name = await cls._parse_name_field(details['Name'])
+            passenger = Passenger(
+                passenger_id=int(details['PassengerId']),
+                survived=bool(details['Survived']),
+                p_class=int(details['Pclass']),
+                title=_name['title'],
+                first_name=_name['first'],
+                maiden_name=_name['maiden'],
+                last_name=_name['last'],
+                nickname=_name['nickname'],
+                alias=_name['alias'],
+                spouse=_name['spouse'],
+                sex='m' if details['Sex'] == 'male' else 'f',
+                age=None if details['Age'] == '' else float(details['Age']),
+                sib_sp=int(details['SibSp']),
+                par_ch=int(details['Parch']),
+                ticket=details['Ticket'],
+                fare=float(details['Fare']),
+                cabin=details['Cabin'],
+                embarked=details['Embarked'],
+            )
+        except (ValueError, KeyError) as e:
+            raise DataValidationError(
+                f"Error processing passenger {details}. {e}"
+            ) from e
+        return passenger
+
+    def as_json(self) -> dict:
+        return asdict(self)
