@@ -1,18 +1,20 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from uvicorn import run
+from typing import AsyncGenerator
 
 from app.db.database import init_sqlite_db
 from app.api.v1.routers import v1_routers
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
-    # TODO: Uses SQLITE for test purposes. NOT for production use.
-    # Use appropriate DB initialization
+async def lifespan(app: FastAPI) -> AsyncGenerator:
+    """system- and app- related checks before and after FastAPI is ran."""
+    # TODO: Uses SQLite for test purposes
+    # Use appropriate DB initialization. In this case, for SQLite
     init_sqlite_db()
     yield
-    # Graceful exit
+    # Post-processes including graceful exit
 
 
 app = FastAPI(lifespan=lifespan)

@@ -5,6 +5,11 @@ from sqlalchemy import (
 
 
 class PassengerModel(Base):
+    """
+    This model represents passenger information for the Titanic dataset,
+    including personal details, travel details, and survival status.
+    """
+
     __tablename__ = "passengers"
 
     passenger_id = Column(Integer, primary_key=True, index=True)

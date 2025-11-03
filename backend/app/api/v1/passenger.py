@@ -11,7 +11,14 @@ router = APIRouter()
 
 
 @router.post("/upload-csv", status_code=200)
-async def upload_csv(file: UploadFile = File(...)):
+async def upload_csv(file: UploadFile = File(...)) -> None:
+    """
+    Endpoint that allows upload of titanic's Passenger data in csv. It will be
+    serialized and stored in DB for further processing.
+
+    The csv data must follow the header as set in Kaggle dataset:
+    https://www.kaggle.com/c/titanic/data?select=train.csv
+    """
     if not file.filename.endswith(".csv"):
         raise HTTPException(status_code=400, detail="File must be a CSV")
 
@@ -30,4 +37,5 @@ async def upload_csv(file: UploadFile = File(...)):
     try:
         await bulk_insert_passengers(validated_passengers)
     except Exception as e:
+        # TODO: Use verbose logging tool
         print('Error', e)

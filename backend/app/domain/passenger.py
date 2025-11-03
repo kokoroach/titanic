@@ -27,6 +27,7 @@ class Passenger:
 
     @classmethod
     async def _parse_name_field(cls, name) -> dict:
+        """Serialize the Passenger name and parse into different tokens"""
         first_name = ""
         first_name_dded = ""
         maiden_name = ""
@@ -38,7 +39,8 @@ class Passenger:
         last_name, _rest = name.split(", ")
         title, first_name = _rest.split(". ", 1)
 
-        # Person has an alias
+        # Passenger has an alias
+        # Form: ("Alias")
         # Example: 'Leeni, Mr. Fahim ("Philip Zenni")'
         if '("' in first_name:
             alias_pattern = compile(
@@ -49,15 +51,14 @@ class Passenger:
             first_name = m.group("first")
             alias = m.group("alias")
 
-        print('first_name after alias', first_name)
-        # Person has spouse
+        # Passenger has spouse
+        # Form: (Spouse)
         # Example: 'Beane, Mrs. Edward (Ethel Clarke)'
         if "(" in first_name:
             spouse_pattern = compile(
                 r'^\s*'
-                r'(?:(?P<spouse>[^()]+?)\s*)?'   # text before parentheses
-                r'\((?P<first>[^()]+)\)'         # first parentheses content
-                r'.*$'                           # ignore the rest
+                r'(?:(?P<spouse>[^()]+?)\s*)?'
+                r'\((?P<first>[^()]+)\).*$'
             )
             m = spouse_pattern.match(first_name)
 
@@ -71,9 +72,8 @@ class Passenger:
                 # Usually an alias
                 pass
 
-        print('first_name after spouse', first_name)
-
-        # Process Nickname
+        # Passenger has nickname
+        # Form: "Nickname"
         # Example: 'O\'Brien, Mrs. Thomas (Johanna "Hannah" Godfrey)'
         if '"' in first_name:
             nickname_pattern = compile(
@@ -84,7 +84,9 @@ class Passenger:
             first_name = m.group("first")
             nickname = m.group("nickname")
             # The rest of the first name
-            first_name_dded = m.group("rest").strip() if m.group("rest") else ""
+            first_name_dded = (
+                m.group("rest").strip() if m.group("rest") else ""
+            )
 
         return {
             "title": title,

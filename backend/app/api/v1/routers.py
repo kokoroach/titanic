@@ -8,7 +8,8 @@ router = APIRouter()
 
 
 @router.get("/")
-async def get_health():
+async def get_health() -> dict:
+    # TODO: Include db_check in the health check
     return {"status": "OK"}
 
 

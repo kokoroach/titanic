@@ -17,11 +17,13 @@ session = Session()
 
 
 def init_sqlite_db() -> None:
-    """TODO"""
+    """Create the DB and initialize tables as defined in the Base.metadata"""
     db_path = engine.url.database
     if not Path(db_path).exists():
         Base.metadata.create_all(bind=engine)
 
 
 def get_session() -> Annotated[Any, "Running DB session"]:
+    # TODO: Experiment on using context managed session,
+    # as to not miss session.commit or session.close
     return session
