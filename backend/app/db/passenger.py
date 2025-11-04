@@ -19,10 +19,11 @@ async def bulk_insert_passengers(passengers: List[dict]) -> None:
         session.commit()
 
 
-async def get_all_passengers() -> List:
+async def get_all_passengers() -> List[PassengerModel]:
     """Returns all passenges as list of PassengerModel instance"""
+    passengers = []
     with Session() as session:
         stmt = select(PassengerModel)
         result = session.execute(stmt)
         passengers = result.scalars().all()
-        return passengers
+    return passengers
