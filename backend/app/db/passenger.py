@@ -17,7 +17,7 @@ async def bulk_insert_passengers(passengers: List[dict]) -> int:
         stmt = insert(PassengerModel).values(passengers)
         stmt = stmt.on_conflict_do_nothing(index_elements=["passenger_id"])
         result = await session.execute(stmt)
-        result = await session.commit()
+        await session.commit()
 
         inserted_rows = result.rowcount
         logger.info(f"Inserted {inserted_rows} passengers.")
