@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 import PassengersPage from "./pages/PassengersPage";
+import PassengerDetailsPage from "./pages/PassengerDetailsPage";
 import StatsPage from "./pages/StatsPage";
 import ChartsPage from "./pages/ChartsPage";
 import "./App.css";
@@ -16,6 +17,7 @@ export default function App() {
             <Route path="/passengers" element={<PassengersPage />} />
             <Route path="/stats" element={<StatsPage />} />
             <Route path="/charts" element={<ChartsPage />} />
+            <Route path="/passenger/:id" element={<PassengerDetailsPage />} />
           </Routes>
         </main>
       </div>

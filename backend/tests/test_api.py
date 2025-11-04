@@ -8,7 +8,7 @@ logger = getLogger(__file__)
 
 CURRENT_DIR = CONFIG_DIR = Path(__file__).resolve()
 
-PASSENGER_ENDPOINT = 'http://localhost:8000/v1/passenger'
+PASSENGER_ENDPOINT = 'http://localhost:8001/api/v1/passenger'
 
 
 def test_upload_csv():

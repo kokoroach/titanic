@@ -105,7 +105,7 @@ class Passenger:
             _name = await cls._parse_name_field(details['Name'])
             passenger = Passenger(
                 passenger_id=int(details['PassengerId']),
-                survived=bool(details['Survived']),
+                survived=bool(int(details['Survived'])),
                 p_class=int(details['Pclass']),
                 title=_name['title'],
                 first_name=_name['first'],

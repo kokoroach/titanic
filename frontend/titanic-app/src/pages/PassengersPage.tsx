@@ -7,17 +7,15 @@ export default function PassengersPage() {
   const [uploading, setUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-  const PASSENGER_API = "http://localhost:8000/api/v1/passenger";
+  // TODO: Improvement: set in  .env
+  const PASSENGER_API = "http://localhost:8001/api/v1/passenger";
 
-  useEffect(() => {
-    const fetchPassengers = async () => {
+  const fetchPassengers = async () => {
       try {
         const response = await fetch(`${PASSENGER_API}/all`);
-
         if (!response.ok) {
           throw new Error("Failed to fetch passengers");
         }
-
         const data: Passenger[] = await response.json();
         console.log({data});
 
@@ -27,6 +25,7 @@ export default function PassengersPage() {
       }
     };
 
+  useEffect(() => {
     fetchPassengers();
   }, []);
 
@@ -40,7 +39,6 @@ export default function PassengersPage() {
     if (!selectedFile) return;
 
     setUploading(true);
-
     try {
       const formData = new FormData();
       formData.append("file", selectedFile);
@@ -51,8 +49,6 @@ export default function PassengersPage() {
       });
 
       const result = await response.json();
-      console.log({result});
-
       alert("File uploaded successfully!");
 
     } catch (error) {
@@ -61,6 +57,7 @@ export default function PassengersPage() {
     } finally {
       setUploading(false);
       setSelectedFile(null);
+      await fetchPassengers();
     }
   };
 
@@ -85,6 +82,5 @@ export default function PassengersPage() {
     <PassengerTable passengers={data} />
     </div>
   );
-
 }
 
