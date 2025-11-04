@@ -17,7 +17,7 @@ export default function App() {
             <Route path="/passengers" element={<PassengersPage />} />
             <Route path="/stats" element={<StatsPage />} />
             <Route path="/charts" element={<ChartsPage />} />
-            <Route path="/passenger/:id" element={<PassengerDetailsPage />} />
+            <Route path="/passengers/:id" element={<PassengerDetailsPage />} />
           </Routes>
         </main>
       </div>

@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Passenger } from "../types/Passenger";
 
-  const PASSENGER_API = "http://localhost:8001/api/v1/passenger";
+  const PASSENGER_API = "http://localhost:8001/api/v1/passengers";
 
 export default function PassengerDetailsPage() {
   const { id } = useParams();

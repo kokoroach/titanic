@@ -35,7 +35,7 @@ export default function PassengerTable({ passengers }: Props) {
             <tr key={p.passenger_id}>
               <td>{p.passenger_id}</td>
               <td>
-                <Link to={`/passenger/${p.passenger_id}`} className="link-name">
+                <Link to={`/passengers/${p.passenger_id}`} className="link-name">
                   {p.last_name}, {p.first_name}
                 </Link>
               </td>

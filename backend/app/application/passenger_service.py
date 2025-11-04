@@ -22,7 +22,7 @@ async def upload_from_csv(file: File):
     for row in reader:
         try:
             # Inline data validation
-            p = await Passenger.from_dict(row)
+            p = Passenger.from_dict(row)
             valid_passengers.append(p.as_json())
         except DataValidationError:
             invalid_passengers.append(p)

@@ -8,6 +8,7 @@ from app.core.cache import (
     get_data_from_cache,
     set_cache_data,
 )
+from app.core.logging import logger
 from app.db.passenger import get_all_passengers, get_passenger_by_id
 
 PASSENGER_PREFIX = "passenger"
@@ -28,9 +29,11 @@ async def upload_csv(file: UploadFile = File(...)):
     if not file.filename.endswith(".csv"):
         raise HTTPException(status_code=400, detail="File must be a CSV")
 
+    print('HEREEE A')
     try:
         inserted_passengers = await upload_from_csv(file)
     except Exception:
+        logger.error("Encountered some issue.", exc_info=True)
         raise HTTPException(
             status_code=400, detail="Server encountered an unexpected issue."
         )
@@ -40,7 +43,7 @@ async def upload_csv(file: UploadFile = File(...)):
         await delete_keys_having_prefix(prefix=PASSENGER_PREFIX)
 
 
-@router.get("/all", status_code=200)
+@router.get("/", status_code=200)
 async def get_passengers() -> List[dict]:
     """Return all of the Titanic passenger data"""
     redis_key = f"{PASSENGER_PREFIX}:all"
