@@ -1,26 +1,28 @@
-import httpx
-from pathlib import Path
 from logging import getLogger
+from pathlib import Path
 
+import httpx
 
 logger = getLogger(__file__)
 
 
 CURRENT_DIR = CONFIG_DIR = Path(__file__).resolve()
 
-PASSENGER_ENDPOINT = 'http://localhost:8001/api/v1/passengers'
+PASSENGER_ENDPOINT = "http://localhost:8001/api/v1/passengers"
 
 
 def test_upload_csv():
-    upload_api = f'{PASSENGER_ENDPOINT}/upload-csv'
+    upload_api = f"{PASSENGER_ENDPOINT}/upload-csv"
     dataset = CURRENT_DIR.parent / "titanic_dataset" / "train.csv"
 
     try:
-        with open(dataset, 'rb') as f:
-            response = httpx.post(upload_api, files={'file': f})
+        with open(dataset, "rb") as f:
+            response = httpx.post(upload_api, files={"file": f})
             # Check the response
             if response.status_code == 200:
-                logger.info(f"OK response: {response.json()}", )
+                logger.info(
+                    f"OK response: {response.json()}",
+                )
             else:
                 logger.warning("Bad response:", response.text)
     except httpx.RequestError as e:
@@ -28,7 +30,7 @@ def test_upload_csv():
 
 
 def test_get_passengers():
-    get_passengers_api = f'{PASSENGER_ENDPOINT}'
+    get_passengers_api = f"{PASSENGER_ENDPOINT}"
     resp = httpx.get(get_passengers_api)
     logger.info(resp)
 

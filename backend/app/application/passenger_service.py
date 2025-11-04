@@ -1,12 +1,12 @@
 from csv import DictReader
 from io import StringIO
+
 from fastapi import File
 
 from app.core.logging import logger
+from app.db.passenger import bulk_insert_passengers
 from app.domain.exceptions import DataValidationError
 from app.domain.passenger import Passenger
-
-from app.db.passenger import bulk_insert_passengers
 
 
 async def upload_from_csv(file: File):
@@ -16,7 +16,7 @@ async def upload_from_csv(file: File):
     invalid_passengers = []
 
     contents = await file.read()
-    buffer = StringIO(contents.decode('utf-8'))
+    buffer = StringIO(contents.decode("utf-8"))
     reader = DictReader(buffer)
 
     for row in reader:
@@ -35,7 +35,6 @@ async def upload_from_csv(file: File):
     finally:
         if invalid_passengers:
             logger.warning(
-                "Found invalid/malformed passengers: "
-                f"{invalid_passengers}"
+                "Found invalid/malformed passengers: " f"{invalid_passengers}"
             )
     return inserted_passengers

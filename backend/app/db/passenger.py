@@ -4,8 +4,8 @@ from sqlalchemy import select
 from sqlalchemy.dialects.sqlite import insert
 
 from app.core.logging import logger
-from app.db.models import PassengerModel
 from app.db.database import AsyncSession
+from app.db.models import PassengerModel
 
 
 async def bulk_insert_passengers(passengers: List[dict]) -> int:
@@ -37,9 +37,7 @@ async def get_all_passengers() -> List[PassengerModel]:
 
 async def get_passenger_by_id(p_id: int) -> PassengerModel:
     async with AsyncSession() as session:
-        stmt = select(PassengerModel).where(
-            PassengerModel.passenger_id == p_id
-        )
+        stmt = select(PassengerModel).where(PassengerModel.passenger_id == p_id)
         result = await session.execute(stmt)
         passenger = result.scalars().first()
     return passenger

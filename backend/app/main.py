@@ -1,14 +1,14 @@
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
 from typing import AsyncGenerator
+
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from uvicorn import run
 
-from app.core.cache import init_redis, close_redis
 from app.api.v1.routers import v1_routers
-from app.db.database import init_sqlite_db
+from app.core.cache import close_redis, init_redis
 from app.core.logging import logger
-
-from fastapi.middleware.cors import CORSMiddleware
+from app.db.database import init_sqlite_db
 
 
 @asynccontextmanager
@@ -41,5 +41,5 @@ for router, prefix, tags in v1_routers:
     app.include_router(router, prefix=f"/api{prefix}", tags=tags)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     run(app, host="0.0.0.0", port=8001)

@@ -1,7 +1,6 @@
+from sqlalchemy import Boolean, Column, Integer, Numeric, SmallInteger, String, Text
+
 from app.db.database import Base
-from sqlalchemy import (
-    Column, Integer, String, Boolean, SmallInteger, Numeric, Text
-)
 
 
 class PassengerModel(Base):
@@ -53,5 +52,5 @@ class PassengerModel(Base):
             "ticket": self.ticket,
             "fare": float(self.fare),
             "cabin": self.cabin,
-            "embarked": self.embarked
+            "embarked": self.embarked,
         }

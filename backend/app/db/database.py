@@ -1,5 +1,6 @@
 from pathlib import Path
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
 from app.core.config import DATABASE_URL
@@ -10,11 +11,7 @@ class Base(DeclarativeBase):
 
 
 engine = create_async_engine(DATABASE_URL, echo=True)
-AsyncSession = sessionmaker(
-    bind=engine,
-    class_=AsyncSession,
-    expire_on_commit=False
-)
+AsyncSession = sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
 
 
 async def init_sqlite_db() -> None:

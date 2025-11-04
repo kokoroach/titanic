@@ -4,9 +4,8 @@ from typing import Any
 import redis.asyncio as _redis
 from redis.asyncio.client import Redis
 
-from app.core.config import REDIS_URL, REDIS_CACHE_TTL
+from app.core.config import REDIS_CACHE_TTL, REDIS_URL
 from app.core.logging import logger
-
 
 redis = None
 
@@ -17,11 +16,7 @@ async def get_redis() -> Redis:
 
 async def init_redis():
     global redis
-    redis = await _redis.from_url(
-        REDIS_URL,
-        encoding="utf-8",
-        decode_responses=True
-    )
+    redis = await _redis.from_url(REDIS_URL, encoding="utf-8", decode_responses=True)
     logger.info("Redis is initialized...")
 
 
@@ -32,13 +27,9 @@ async def close_redis():
 
 async def delete_keys_having_prefix(prefix: str):
     redis = await get_redis()
-    cursor = b'0'
+    cursor = b"0"
     while cursor:
-        cursor, keys = await redis.scan(
-            cursor=cursor,
-            match=f"{prefix}*",
-            count=100
-        )
+        cursor, keys = await redis.scan(cursor=cursor, match=f"{prefix}*", count=100)
         if keys:
             await redis.delete(*keys)
 

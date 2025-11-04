@@ -1,18 +1,14 @@
-from typing import List, Dict
+from typing import Dict, List
 
-from fastapi import APIRouter, UploadFile, File, HTTPException
+from fastapi import APIRouter, File, HTTPException, UploadFile
 
-from app.db.passenger import (
-    get_all_passengers,
-    get_passenger_by_id
-)
-from app.core.cache import (
-    get_data_from_cache,
-    delete_keys_having_prefix,
-    set_cache_data
-)
 from app.application.passenger_service import upload_from_csv
-
+from app.core.cache import (
+    delete_keys_having_prefix,
+    get_data_from_cache,
+    set_cache_data,
+)
+from app.db.passenger import get_all_passengers, get_passenger_by_id
 
 PASSENGER_PREFIX = "passenger"
 
@@ -36,8 +32,7 @@ async def upload_csv(file: UploadFile = File(...)):
         inserted_passengers = await upload_from_csv(file)
     except Exception:
         raise HTTPException(
-            status_code=400,
-            detail="Server encountered an unexpected issue."
+            status_code=400, detail="Server encountered an unexpected issue."
         )
 
     if inserted_passengers:

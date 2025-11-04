@@ -2,7 +2,6 @@ from fastapi import APIRouter
 
 from backend.app.api.v1.passengers import router as passenger_router
 
-
 VERSION = "v1"
 router = APIRouter()
 
