@@ -11,7 +11,6 @@ from app.db.passenger import (
     get_passenger_by_id
 )
 from app.core.cache import (
-    get_redis,
     get_data_from_cache,
     delete_keys_having_prefix,
     set_cache_data
@@ -31,7 +30,7 @@ router = APIRouter()
 # Cache Interfaces
 
 
-async def _invalidate_all_passenger_cache() -> None:
+async def _reset_passenger_cache() -> None:
     await delete_keys_having_prefix(prefix=PASSENGER_PREFIX)
 
 
@@ -45,6 +44,10 @@ async def upload_csv(file: UploadFile = File(...)):
     The csv data must follow the header as set in Kaggle dataset:
     https://www.kaggle.com/c/titanic/data?select=train.csv
     """
+    insertion_count = 0
+    valid_passengers = []
+    invalid_passengers = []
+
     if not file.filename.endswith(".csv"):
         raise HTTPException(status_code=400, detail="File must be a CSV")
 
@@ -52,8 +55,6 @@ async def upload_csv(file: UploadFile = File(...)):
     buffer = StringIO(contents.decode('utf-8'))
     reader = DictReader(buffer)
 
-    valid_passengers = []
-    invalid_passengers = []
     for row in reader:
         try:
             # Inline data validation
@@ -64,7 +65,7 @@ async def upload_csv(file: UploadFile = File(...)):
 
     # Bulk insertion to database
     try:
-        await bulk_insert_passengers(valid_passengers)
+        insertion_count = await bulk_insert_passengers(valid_passengers)
     except Exception as e:
         logger.error(f"API: Ran an issue when inserting passengers: {e}")
     finally:
@@ -74,8 +75,9 @@ async def upload_csv(file: UploadFile = File(...)):
                 f"{invalid_passengers}"
             )
 
-    # Reset cache
-    await _invalidate_all_passenger_cache()
+    if insertion_count:
+        # Reset cache if new data were inserted in the DB
+        await _reset_passenger_cache()
 
 @router.get("/all", status_code=200)
 async def get_passengers() -> List[dict]:
