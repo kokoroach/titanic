@@ -20,10 +20,20 @@ async def bulk_insert_passengers(passengers: List[dict]) -> None:
 
 
 async def get_all_passengers() -> List[PassengerModel]:
-    """Returns all passenges as list of PassengerModel instance"""
+    """Returns all passengers as list of PassengerModel instance"""
     passengers = []
     with Session() as session:
         stmt = select(PassengerModel)
         result = session.execute(stmt)
         passengers = result.scalars().all()
     return passengers
+
+
+async def get_passenger_by_id(p_id: int) -> PassengerModel:
+    with Session() as session:
+        stmt = select(PassengerModel).where(
+            PassengerModel.passenger_id == p_id
+        )
+        result = session.execute(stmt)
+        passenger = result.scalars().first()
+    return passenger

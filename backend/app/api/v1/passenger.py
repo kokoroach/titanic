@@ -1,9 +1,14 @@
 from csv import DictReader
 from fastapi import APIRouter, UploadFile, File, HTTPException
 from io import StringIO
+from typing import List
 
 from app.core.logging import logger
-from app.db.passenger import bulk_insert_passengers, get_all_passengers
+from app.db.passenger import (
+    bulk_insert_passengers,
+    get_all_passengers,
+    get_passenger_by_id
+)
 from app.domain.exceptions import DataValidationError
 from app.domain.passenger import Passenger
 
@@ -42,7 +47,14 @@ async def upload_csv(file: UploadFile = File(...)) -> None:
 
 
 @router.get("/all", status_code=200)
-async def get_passengers():
+async def get_passengers() -> List[dict]:
     """Return all of the Titanic passenger data"""
     _passengers = await get_all_passengers()
     return [p.to_dict() for p in _passengers]
+
+
+@router.get("/{p_id}", status_code=200)
+async def get_passenger(p_id: int):
+    """Return a Titanic passenger"""
+    passenger = await get_passenger_by_id(p_id)
+    return passenger.to_dict()
