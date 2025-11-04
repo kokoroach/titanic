@@ -29,7 +29,7 @@ class Passenger:
     async def _parse_name_field(cls, name) -> dict:
         """Serialize the Passenger name and parse into different tokens"""
         first_name = ""
-        first_name_dded = ""
+        first_name_added = ""
         maiden_name = ""
         last_name = ""
         nickname = ""
@@ -84,13 +84,13 @@ class Passenger:
             first_name = m.group("first")
             nickname = m.group("nickname")
             # The rest of the first name
-            first_name_dded = (
+            first_name_added = (
                 m.group("rest").strip() if m.group("rest") else ""
             )
 
         return {
             "title": title,
-            "first": first_name + " " + first_name_dded,
+            "first": first_name + " " + first_name_added,
             "maiden": maiden_name,
             "last": last_name,
             "nickname": nickname,

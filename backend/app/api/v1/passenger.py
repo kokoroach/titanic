@@ -2,7 +2,8 @@ from csv import DictReader
 from fastapi import APIRouter, UploadFile, File, HTTPException
 from io import StringIO
 
-from app.db.passenger import bulk_insert_passengers
+from app.core.logging import logger
+from app.db.passenger import bulk_insert_passengers, get_all_passengers
 from app.domain.exceptions import DataValidationError
 from app.domain.passenger import Passenger
 
@@ -36,6 +37,12 @@ async def upload_csv(file: UploadFile = File(...)) -> None:
 
     try:
         await bulk_insert_passengers(validated_passengers)
-    except Exception as e:
-        # TODO: Use verbose logging tool
-        print('Error', e)
+    except Exception:
+        logger.error("API: Ran an issue when inserting passengers")
+
+
+@router.get("/all", status_code=200)
+async def get_passengers():
+    """Return all of the Titanic passenger data"""
+    _passengers = await get_all_passengers()
+    return [p.to_dict() for p in _passengers]
