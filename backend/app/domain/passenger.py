@@ -32,7 +32,7 @@ class Passenger:
         title, first name, maiden name, last name, nickname, alias, and spouse.
         """
         first_name = ""
-        first_name_added = ""
+        added_first_name = ""
         maiden_name = ""
         last_name = ""
         nickname = ""
@@ -85,11 +85,11 @@ class Passenger:
             first_name = m.group("first")
             nickname = m.group("nickname")
             # The rest of the first name
-            first_name_added = m.group("rest").strip() if m.group("rest") else ""
+            added_first_name = f" {m.group('rest').strip()}" if m.group("rest") else ""
 
         return {
             "title": title,
-            "first": first_name + " " + first_name_added,
+            "first": first_name + added_first_name,
             "maiden": maiden_name,
             "last": last_name,
             "nickname": nickname,
