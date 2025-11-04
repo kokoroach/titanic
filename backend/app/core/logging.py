@@ -7,7 +7,7 @@ logger.setLevel(logging.INFO)
 ch = logging.StreamHandler()
 ch.setLevel(logging.INFO)
 
-# Formatter
+# Format
 formatter = logging.Formatter("[%(asctime)s] %(levelname)s in %(module)s: %(message)s")
 ch.setFormatter(formatter)
 

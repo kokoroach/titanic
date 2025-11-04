@@ -1,31 +1,27 @@
 from sqlalchemy import func, select, text
+
 from app.db.database import AsyncSession
 from app.db.models import PassengerModel
 
 
 async def get_numeric_passenger_stats(column):
+    """
+    Retrieve numerical statistics for a given column in the PassengerModel.
+    """
     _column = text(column)
     async with AsyncSession() as session:
         stmt = select(
-            func.min(_column),
-            func.max(_column),
-            func.avg(_column),
-            func.count(_column)
+            func.min(_column), func.max(_column), func.avg(_column), func.count(_column)
         ).select_from(PassengerModel)
 
         result = await session.execute(stmt)
-        stats_query = result.one()
-
-        return {
-            "type": "numeric",
-            "min": float(stats_query[0]) if stats_query[0] is not None else None,
-            "max": float(stats_query[1]) if stats_query[1] is not None else None,
-            "avg": float(stats_query[2]) if stats_query[2] is not None else None,
-            "count": stats_query[3],
-        }
+        return result.one()
 
 
 async def get_nonnumeric_passenger_stats(column):
+    """
+    Retrieve non-numerical statistics for a given column in the PassengerModel.
+    """
     _column = text(column)
     async with AsyncSession() as session:
         stmt = (
@@ -35,10 +31,4 @@ async def get_nonnumeric_passenger_stats(column):
         ).select_from(PassengerModel)
 
         result = await session.execute(stmt)
-        rows = result.all()
-
-        return {
-            "type": "categorical",
-            "values": [{"value": r[0], "count": r[1]} for r in rows],
-            "unique_count": len(rows)
-        }
+        return result.all()

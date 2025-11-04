@@ -30,27 +30,18 @@ class PassengerModel(Base):
     cabin = Column(String)
     embarked = Column(String)
 
+    def __repr__(self) -> str:
+        return f"<Passenger(id={self.passenger_id}, name={self.first_name} {self.last_name})>"
+
     def to_dict(self) -> dict:
         """
         Return a JSON-serializable dictionary representation of the Passenger.
         """
-        return {
-            "passenger_id": self.passenger_id,
-            "survived": self.survived,
-            "p_class": self.p_class,
-            "title": self.title,
-            "first_name": self.first_name,
-            "maiden_name": self.maiden_name,
-            "last_name": self.last_name,
-            "nickname": self.nickname,
-            "alias": self.alias,
-            "spouse": self.spouse,
-            "sex": self.sex,
-            "age": float(self.age) if self.age is not None else None,
-            "sib_sp": self.sib_sp,
-            "par_ch": self.par_ch,
-            "ticket": self.ticket,
-            "fare": float(self.fare),
-            "cabin": self.cabin,
-            "embarked": self.embarked,
-        }
+        result = {}
+
+        for column in self.__table__.columns:
+            value = getattr(self, column.name)
+            if isinstance(value, Numeric):
+                float(self.age) if self.age is not None else None
+            result[column.name] = value
+        return result

@@ -9,7 +9,16 @@ from app.domain.exceptions import DataValidationError
 from app.domain.passenger import Passenger
 
 
-async def upload_from_csv(file: File):
+async def upload_from_csv(file: File) -> int:
+    """
+    Process passenger data from a CSV file.
+
+    It validates each row using `Passenger.from_dict`, then bulk inserts valid
+    passenger data into the database.
+
+    Finally, it returns the total number of rows that were inserted in the
+    database.
+    """
     inserted_passengers = 0
 
     valid_passengers = []

@@ -1,3 +1,15 @@
+"""
+FastAPI Application Entry Point
+
+This module sets up the FastAPI application with:
+- Lifecycle management (startup/shutdown events)
+- Middleware (CORS)
+- Versioned API routers
+- Database and Redis initialization
+
+To run the app:
+    uvicorn app.main:app --port 8001 --reload
+"""
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
@@ -7,14 +19,18 @@ from uvicorn import run
 
 from app.api.v1.routers import v1_routers
 from app.core.cache import close_redis, init_redis
-from app.core.config import ALLOWED_ORIGINS
+from app.core.config import ALLOW_ORIGINS
 from app.core.logging import logger
 from app.db.database import init_sqlite_db
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator:
-    """system- and app- related checks before and after FastAPI is ran."""
+    """
+    Async context manager for FastAPI lifespan events.
+
+    It handles tasks before the app starts and after it shuts down:
+    """
     logger.info("Running pre-startup checks before running FastAPI")
     # TODO: Uses SQLite for test purposes
     # Use appropriate DB initialization. In this case, for SQLite
@@ -29,11 +45,9 @@ async def lifespan(app: FastAPI) -> AsyncGenerator:
 
 
 app = FastAPI(lifespan=lifespan)
-
-# TODO: Test purposes
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=ALLOWED_ORIGINS,
+    allow_origins=ALLOW_ORIGINS,
 )
 
 
@@ -43,4 +57,7 @@ for router, prefix, tags in v1_routers:
 
 
 if __name__ == "__main__":
+    """
+    Run the application using Uvicorn server.
+    """
     run(app, host="0.0.0.0", port=8001)

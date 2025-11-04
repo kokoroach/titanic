@@ -9,7 +9,8 @@ router = APIRouter()
 
 @router.get("/")
 async def get_health() -> dict:
-    # TODO: Include db_check in the health check
+    """Expose an endpoint that checks for system health"""
+    # TODO: Include DB and cache layer
     return {"status": "OK"}
 
 

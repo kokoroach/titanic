@@ -7,9 +7,15 @@ from app.core.config import DATABASE_URL
 
 
 class Base(DeclarativeBase):
+    """
+    Base class for all SQLAlchemy ORM models.
+
+    All models should inherit from this Base
+    """
     pass
 
 
+# Create an asynchronous SQLAlchemy engine. Example for aiosqlite engine
 engine = create_async_engine(DATABASE_URL, echo=True)
 AsyncSession = sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
 
@@ -17,6 +23,7 @@ AsyncSession = sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=F
 async def init_sqlite_db() -> None:
     """Create the DB and initialize tables as defined in the Base.metadata"""
     db_path = engine.url.database
+
     if not Path(db_path).exists():
         async with engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)

@@ -27,7 +27,10 @@ class Passenger:
 
     @classmethod
     def _parse_name_field(cls, name) -> dict:
-        """Serialize the Passenger name and parse into different tokens"""
+        """
+        Parses a full name string into structured components:
+        title, first name, maiden name, last name, nickname, alias, and spouse.
+        """
         first_name = ""
         first_name_added = ""
         maiden_name = ""
@@ -96,20 +99,23 @@ class Passenger:
 
     @classmethod
     def from_dict(cls, details: dict) -> "Passenger":
-        """Import passenger from a JSON-serialized dict"""
+        """
+        Create a Passenger instance from JSON-like dictionary.
+        Performs validation and type conversion.
+        """
         try:
-            _name = cls._parse_name_field(details["Name"])
+            parsed_name = cls._parse_name_field(details["Name"])
             passenger = Passenger(
                 passenger_id=int(details["PassengerId"]),
                 survived=bool(int(details["Survived"])),
                 p_class=int(details["Pclass"]),
-                title=_name["title"],
-                first_name=_name["first"],
-                maiden_name=_name["maiden"],
-                last_name=_name["last"],
-                nickname=_name["nickname"],
-                alias=_name["alias"],
-                spouse=_name["spouse"],
+                title=parsed_name["title"],
+                first_name=parsed_name["first"],
+                maiden_name=parsed_name["maiden"],
+                last_name=parsed_name["last"],
+                nickname=parsed_name["nickname"],
+                alias=parsed_name["alias"],
+                spouse=parsed_name["spouse"],
                 sex="m" if details["Sex"] == "male" else "f",
                 age=None if details["Age"] == "" else float(details["Age"]),
                 sib_sp=int(details["SibSp"]),
