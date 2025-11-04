@@ -7,6 +7,7 @@ from uvicorn import run
 
 from app.api.v1.routers import v1_routers
 from app.core.cache import close_redis, init_redis
+from app.core.config import ALLOWED_ORIGINS
 from app.core.logging import logger
 from app.db.database import init_sqlite_db
 
@@ -32,7 +33,7 @@ app = FastAPI(lifespan=lifespan)
 # TODO: Test purposes
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # React dev server
+    allow_origins=ALLOWED_ORIGINS,
 )
 
 

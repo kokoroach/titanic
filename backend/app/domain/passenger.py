@@ -26,7 +26,7 @@ class Passenger:
     embarked: str
 
     @classmethod
-    async def _parse_name_field(cls, name) -> dict:
+    def _parse_name_field(cls, name) -> dict:
         """Serialize the Passenger name and parse into different tokens"""
         first_name = ""
         first_name_added = ""
@@ -95,10 +95,10 @@ class Passenger:
         }
 
     @classmethod
-    async def from_dict(cls, details: dict) -> "Passenger":
+    def from_dict(cls, details: dict) -> "Passenger":
         """Import passenger from a JSON-serialized dict"""
         try:
-            _name = await cls._parse_name_field(details["Name"])
+            _name = cls._parse_name_field(details["Name"])
             passenger = Passenger(
                 passenger_id=int(details["PassengerId"]),
                 survived=bool(int(details["Survived"])),

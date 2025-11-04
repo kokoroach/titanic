@@ -27,11 +27,9 @@ async def close_redis():
 
 async def delete_keys_having_prefix(prefix: str):
     redis = await get_redis()
-    cursor = b"0"
-    while cursor:
-        cursor, keys = await redis.scan(cursor=cursor, match=f"{prefix}*", count=100)
-        if keys:
-            await redis.delete(*keys)
+
+    async for key in redis.scan_iter(match=f"{prefix}*"):
+        await redis.delete(key)
 
 
 async def get_data_from_cache(key: str) -> dict | None:
