@@ -1,38 +1,81 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
+.app-container {
+  display: flex;
   min-height: 100vh;
+}
+
+
+.sidebar {
+  flex: 1;
+  max-width: 250px;
+  background: #1f2937;
+  color: white;
+  padding: 20px;
   display: flex;
   flex-direction: column;
+  gap: 16px;
+}
+
+.sidebar h2 {
+  font-size: 1.25rem;
+  margin-bottom: 12px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sidebar a {
+  color: #e5e7eb;
+  text-decoration: none;
+  font-size: 1rem;
+}
+
+.sidebar a:hover {
+  color: #4ade80; /* green on hover */
+}
+
+/* Main content area — 5/6 width */
+main {
+  flex: 5;
+  padding: 24px;
+  background: #f3f4f6; /* light gray */
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  margin-bottom: 16px;
 }
 
-.App-link {
-  color: #61dafb;
+.upload-container {
+  background: white;
+  padding: 10px 14px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* ✅ text now left inside the card */
+  gap: 6px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.upload-label {
+  font-size: 0.85rem;
+  color: #1f2937;
+  margin: 0;
+  font-weight: 500;
+}
+
+.upload-container input[type="file"] {
+  font-size: 0.8rem;
+}
+
+.upload-status {
+  font-size: 0.8rem;
+  color: #4ade80;
+  font-weight: 600;
 }

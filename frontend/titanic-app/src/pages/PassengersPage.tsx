@@ -1,3 +1,90 @@
+import { useEffect, useState } from "react";
+import PassengerTable from "../components/PassengerTable";
+import { Passenger } from "../types/Passenger";
+
 export default function PassengersPage() {
-  return <h2>Passengers as Table</h2>;
+  const [data, setData] = useState<Passenger[]>([]);
+  const [uploading, setUploading] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  const PASSENGER_API = "http://localhost:8000/api/v1/passenger";
+
+  useEffect(() => {
+    const fetchPassengers = async () => {
+      try {
+        const response = await fetch(`${PASSENGER_API}/all`);
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch passengers");
+        }
+
+        const data: Passenger[] = await response.json();
+        console.log({data});
+
+        setData(data);
+      } catch (error) {
+        console.error("Error fetching passengers:", error);
+      }
+    };
+
+    fetchPassengers();
+  }, []);
+
+
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0] || null;
+    setSelectedFile(file);
+  };
+
+  const handleFileUpload = async () => {
+    if (!selectedFile) return;
+
+    setUploading(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", selectedFile);
+
+      const response = await fetch(`${PASSENGER_API}/upload-csv`, {
+        method: "POST",
+        body: formData,
+      });
+
+      const result = await response.json();
+      console.log({result});
+
+      alert("File uploaded successfully!");
+
+    } catch (error) {
+      console.error(error);
+
+    } finally {
+      setUploading(false);
+      setSelectedFile(null);
+    }
+  };
+
+  return (
+    <div>
+      <div className="page-header">
+      <h2>Passengers</h2>
+
+      <div className="upload-container">
+        <p className="upload-label">Upload Titanic Dataset</p>
+        <input type="file" accept=".csv" onChange={handleFileSelect} />
+        <button
+          onClick={handleFileUpload}
+          disabled={!selectedFile || uploading}
+          className="upload-btn"
+        >
+          {uploading ? "Uploading..." : "Upload"}
+        </button>
+      </div>
+    </div>
+
+    <PassengerTable passengers={data} />
+    </div>
+  );
+
 }
+

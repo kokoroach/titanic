@@ -3,6 +3,7 @@ import Sidebar from "./components/Sidebar";
 import PassengersPage from "./pages/PassengersPage";
 import StatsPage from "./pages/StatsPage";
 import ChartsPage from "./pages/ChartsPage";
+import "./App.css";
 
 export default function App() {
   return (

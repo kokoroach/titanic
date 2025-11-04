@@ -37,8 +37,8 @@ async def upload_csv(file: UploadFile = File(...)) -> None:
 
     try:
         await bulk_insert_passengers(validated_passengers)
-    except Exception:
-        logger.error("API: Ran an issue when inserting passengers")
+    except Exception as e:
+        logger.error(f"API: Ran an issue when inserting passengers: {e}")
 
 
 @router.get("/all", status_code=200)

@@ -3,10 +3,11 @@ from fastapi import FastAPI
 from typing import AsyncGenerator
 from uvicorn import run
 
-
 from app.api.v1.routers import v1_routers
 from app.db.database import init_sqlite_db
 from app.core.logging import logger
+
+from fastapi.middleware.cors import CORSMiddleware
 
 
 @asynccontextmanager
@@ -25,9 +26,16 @@ async def lifespan(app: FastAPI) -> AsyncGenerator:
 
 app = FastAPI(lifespan=lifespan)
 
+# TODO: Test purposes
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # React dev server
+)
+
+
 # Setup up versioned API routers
 for router, prefix, tags in v1_routers:
-    app.include_router(router, prefix=prefix, tags=tags)
+    app.include_router(router, prefix=f"/api{prefix}", tags=tags)
 
 
 if __name__ == '__main__':
