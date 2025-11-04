@@ -79,3 +79,109 @@ main {
   color: #4ade80;
   font-weight: 600;
 }
+
+
+.passenger-table-container {
+  width: 100%;
+  overflow-x: auto;
+  margin-top: 16px;
+}
+
+.passenger-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 14px;
+  background: #fff;
+}
+
+.passenger-table th,
+.passenger-table td {
+  border: 1px solid #ddd;
+  text-align: left;
+  padding: 8px 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ✅ Define stable column widths */
+.passenger-table th:nth-child(1),
+.passenger-table td:nth-child(1) {
+  width: 30px;
+}
+
+.passenger-table th:nth-child(2),
+.passenger-table td:nth-child(2) {
+  width: 180px;
+}
+
+.passenger-table th:nth-child(3),
+.passenger-table td:nth-child(3) {
+  width: 100px;
+}
+
+.passenger-table th:nth-child(4),
+.passenger-table td:nth-child(4) {
+  width: 80px;
+}
+
+.passenger-table th:nth-child(5),
+.passenger-table td:nth-child(5) {
+  width: 100px;
+}
+
+.passenger-table th:nth-child(6),
+.passenger-table td:nth-child(6) {
+  width: 80px;
+}
+
+.passenger-table th {
+  background: #0077cc;
+  color: #fff;
+  font-weight: bold;
+}
+
+.passenger-table tr:nth-child(even) {
+  background: #f8f9fa;
+}
+
+.passenger-table tr:hover {
+  background: #eaf3ff;
+}
+
+.link-name {
+  color: #0059b2;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.link-name:hover {
+  text-decoration: underline;
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin: 14px 0;
+}
+
+.pagination button {
+  padding: 6px 14px;
+  border: none;
+  border-radius: 4px;
+  background: #0077cc;
+  color: white;
+  cursor: pointer;
+  transition: opacity 0.2s ease-in-out;
+}
+.pagination button:hover:not(:disabled) {
+  opacity: 0.85;
+}
+.pagination button:disabled {
+  background: #b3b3b3;
+  cursor: not-allowed;
+}
