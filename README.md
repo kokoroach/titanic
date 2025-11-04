@@ -43,4 +43,6 @@ docker compose up --build
 
 ## 💻 Dashboard
 
+Browse the Passenger Dashboard → http://localhost:3000/
+
 <img width="1919" height="560" alt="Screenshot 2025-11-05 040519" src="https://github.com/user-attachments/assets/a647c407-d776-42d4-98b3-29fb3f06eef7" />
