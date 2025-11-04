@@ -37,14 +37,15 @@ async def upload_csv(file: UploadFile = File(...)):
             status_code=400, detail="Server encountered an unexpected issue."
         )
 
+    # Reset cache if new data are inserted in the DB
     if inserted_passengers:
-        # Reset cache if new data were inserted in the DB
         await delete_keys_having_prefix(prefix=PASSENGER_PREFIX)
 
 
 @router.get("/", status_code=200)
-async def get_passengers() -> List[dict]:
-    """Return all of the Titanic passenger data"""
+async def get_passengers():
+    """Return all of the titanic Passenger data"""
+    # TODO: Implement pagination
     redis_key = f"{PASSENGER_PREFIX}:all"
 
     cached_data = await get_data_from_cache(redis_key)
@@ -62,7 +63,7 @@ async def get_passengers() -> List[dict]:
 
 @router.get("/{p_id}", status_code=200)
 async def get_passenger(p_id: int):
-    """Return a Titanic passenger"""
+    """Return the specified Passenger by its ID."""
     redis_key = f"{PASSENGER_PREFIX}:{p_id}"
 
     # Check cache

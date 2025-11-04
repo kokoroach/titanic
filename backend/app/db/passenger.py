@@ -36,6 +36,7 @@ async def get_all_passengers() -> List[PassengerModel]:
 
 
 async def get_passenger_by_id(p_id: int) -> PassengerModel:
+    """Return a PassengerModel given some id."""
     async with AsyncSession() as session:
         stmt = select(PassengerModel).where(PassengerModel.passenger_id == p_id)
         result = await session.execute(stmt)
