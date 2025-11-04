@@ -1,4 +1,5 @@
 import pytest
+
 from app.core.config import TITANIC_DATASET
 from app.domain.passenger import Passenger
 

@@ -1,5 +1,5 @@
+from dataclasses import asdict, dataclass
 from re import compile
-from dataclasses import dataclass, asdict
 
 from app.domain.exceptions import DataValidationError
 
@@ -26,7 +26,7 @@ class Passenger:
     embarked: str
 
     @classmethod
-    async def _parse_name_field(cls, name) -> dict:
+    def _parse_name_field(cls, name) -> dict:
         """Serialize the Passenger name and parse into different tokens"""
         first_name = ""
         first_name_added = ""
@@ -56,9 +56,7 @@ class Passenger:
         # Example: 'Beane, Mrs. Edward (Ethel Clarke)'
         if "(" in first_name:
             spouse_pattern = compile(
-                r'^\s*'
-                r'(?:(?P<spouse>[^()]+?)\s*)?'
-                r'\((?P<first>[^()]+)\).*$'
+                r"^\s*" r"(?:(?P<spouse>[^()]+?)\s*)?" r"\((?P<first>[^()]+)\).*$"
             )
             m = spouse_pattern.match(first_name)
 
@@ -84,9 +82,7 @@ class Passenger:
             first_name = m.group("first")
             nickname = m.group("nickname")
             # The rest of the first name
-            first_name_added = (
-                m.group("rest").strip() if m.group("rest") else ""
-            )
+            first_name_added = m.group("rest").strip() if m.group("rest") else ""
 
         return {
             "title": title,
@@ -99,29 +95,29 @@ class Passenger:
         }
 
     @classmethod
-    async def from_dict(cls, details: dict) -> "Passenger":
+    def from_dict(cls, details: dict) -> "Passenger":
         """Import passenger from a JSON-serialized dict"""
         try:
-            _name = await cls._parse_name_field(details['Name'])
+            _name = cls._parse_name_field(details["Name"])
             passenger = Passenger(
-                passenger_id=int(details['PassengerId']),
-                survived=bool(details['Survived']),
-                p_class=int(details['Pclass']),
-                title=_name['title'],
-                first_name=_name['first'],
-                maiden_name=_name['maiden'],
-                last_name=_name['last'],
-                nickname=_name['nickname'],
-                alias=_name['alias'],
-                spouse=_name['spouse'],
-                sex='m' if details['Sex'] == 'male' else 'f',
-                age=None if details['Age'] == '' else float(details['Age']),
-                sib_sp=int(details['SibSp']),
-                par_ch=int(details['Parch']),
-                ticket=details['Ticket'],
-                fare=float(details['Fare']),
-                cabin=details['Cabin'],
-                embarked=details['Embarked'],
+                passenger_id=int(details["PassengerId"]),
+                survived=bool(int(details["Survived"])),
+                p_class=int(details["Pclass"]),
+                title=_name["title"],
+                first_name=_name["first"],
+                maiden_name=_name["maiden"],
+                last_name=_name["last"],
+                nickname=_name["nickname"],
+                alias=_name["alias"],
+                spouse=_name["spouse"],
+                sex="m" if details["Sex"] == "male" else "f",
+                age=None if details["Age"] == "" else float(details["Age"]),
+                sib_sp=int(details["SibSp"]),
+                par_ch=int(details["Parch"]),
+                ticket=details["Ticket"],
+                fare=float(details["Fare"]),
+                cabin=details["Cabin"],
+                embarked=details["Embarked"],
             )
         except (ValueError, KeyError) as e:
             raise DataValidationError(

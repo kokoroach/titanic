@@ -1,9 +1,9 @@
 from fastapi import APIRouter
 
-from app.api.v1.passenger import router as passenger_router
+from app.api.v1.passengers import router as passengers_router
+from app.api.v1.stats import router as stats_router
 
-
-VERSION = "v1"
+API_VERSION = "v1"
 router = APIRouter()
 
 
@@ -14,6 +14,7 @@ async def get_health() -> dict:
 
 
 v1_routers = [
-    (router, f"/{VERSION}/health", "Health Check"),
-    (passenger_router, f"/{VERSION}/passenger", "Passenger"),
+    (router, f"/{API_VERSION}/health", "Health Check"),
+    (passengers_router, f"/{API_VERSION}/passengers", "Passenger"),
+    (stats_router, f"/{API_VERSION}/passengers/stats", "Passenger Stats"),
 ]
