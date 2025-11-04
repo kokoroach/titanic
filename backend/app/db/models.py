@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from sqlalchemy import Boolean, Column, Integer, Numeric, SmallInteger, String
 
 from app.db.database import Base
@@ -41,7 +43,8 @@ class PassengerModel(Base):
 
         for column in self.__table__.columns:
             value = getattr(self, column.name)
-            if isinstance(value, Numeric):
-                float(self.age) if self.age is not None else None
+            # NOTE: SQLite set `Number` field into `Decimal` data type
+            if isinstance(value, (Numeric, Decimal)):
+                value = float(self.age) if self.age is not None else None
             result[column.name] = value
         return result

@@ -1,4 +1,5 @@
 from typing import Dict
+
 from sqlalchemy.sql.sqltypes import Float, Integer, Numeric, SmallInteger
 
 from app.db.models import PassengerModel
