@@ -17,6 +17,7 @@ async def get_numeric_passenger_stats(column):
         stats_query = result.one()
 
         return {
+            "type": "numeric",
             "min": float(stats_query[0]) if stats_query[0] is not None else None,
             "max": float(stats_query[1]) if stats_query[1] is not None else None,
             "avg": float(stats_query[2]) if stats_query[2] is not None else None,
@@ -37,6 +38,7 @@ async def get_nonnumeric_passenger_stats(column):
         rows = result.all()
 
         return {
+            "type": "categorical",
             "values": [{"value": r[0], "count": r[1]} for r in rows],
             "unique_count": len(rows)
         }

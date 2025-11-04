@@ -7,7 +7,6 @@ export default function Sidebar() {
       <ul>
         <li><Link to="/passengers">Passengers</Link></li>
         <li><Link to="/stats">Stats</Link></li>
-        <li><Link to="/charts">Charts</Link></li>
       </ul>
     </div>
   );
