@@ -1,4 +1,3 @@
-import json
 from csv import DictReader
 from fastapi import APIRouter, UploadFile, File, HTTPException
 from io import StringIO
@@ -32,7 +31,6 @@ router = APIRouter()
 
 async def _reset_passenger_cache() -> None:
     await delete_keys_having_prefix(prefix=PASSENGER_PREFIX)
-
 
 
 @router.post("/upload-csv", status_code=200)
@@ -78,6 +76,7 @@ async def upload_csv(file: UploadFile = File(...)):
     if insertion_count:
         # Reset cache if new data were inserted in the DB
         await _reset_passenger_cache()
+
 
 @router.get("/all", status_code=200)
 async def get_passengers() -> List[dict]:

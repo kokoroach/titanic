@@ -2,8 +2,7 @@ from pathlib import Path
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
-
-DATABASE_URL = "sqlite+aiosqlite:///titanic.db"
+from app.core.config import DATABASE_URL
 
 
 class Base(DeclarativeBase):

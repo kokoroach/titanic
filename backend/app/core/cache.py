@@ -1,14 +1,12 @@
 import json
-from typing import List, Any
+from typing import Any
 
 import redis.asyncio as _redis
 from redis.asyncio.client import Redis
 
+from app.core.config import REDIS_URL, REDIS_CACHE_TTL
 from app.core.logging import logger
 
-
-REDIS_URL = "redis://localhost:6379"
-CACHE_TTL = 600  # 10 mins
 
 redis = None
 
@@ -53,4 +51,4 @@ async def get_data_from_cache(key: str) -> dict | None:
 
 async def set_cache_data(key: str, data: Any) -> None:
     redis = await get_redis()
-    await redis.set(key, json.dumps(data), ex=CACHE_TTL)
+    await redis.set(key, json.dumps(data), ex=REDIS_CACHE_TTL)
