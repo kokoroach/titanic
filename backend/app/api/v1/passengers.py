@@ -3,11 +3,8 @@ from typing import Dict, List
 from fastapi import APIRouter, File, HTTPException, UploadFile
 
 from app.application.passenger_service import upload_from_csv
-from app.core.cache import (
-    delete_keys_having_prefix,
-    get_data_from_cache,
-    set_cache_data,
-)
+from app.core.cache import (delete_keys_having_prefix, get_data_from_cache,
+                            set_cache_data)
 from app.core.logging import logger
 from app.db.passenger import get_all_passengers, get_passenger_by_id
 
@@ -29,7 +26,6 @@ async def upload_csv(file: UploadFile = File(...)):
     if not file.filename.endswith(".csv"):
         raise HTTPException(status_code=400, detail="File must be a CSV")
 
-    print('HEREEE A')
     try:
         inserted_passengers = await upload_from_csv(file)
     except Exception:

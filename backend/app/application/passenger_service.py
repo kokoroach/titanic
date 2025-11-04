@@ -30,8 +30,8 @@ async def upload_from_csv(file: File):
     # Bulk insertion to database
     try:
         inserted_passengers = await bulk_insert_passengers(valid_passengers)
-    except Exception as e:
-        logger.error(f"API: Ran an issue when inserting passengers: {e}")
+    except Exception:
+        logger.error("API: Ran an issue when inserting passengers.", exc_info=True)
     finally:
         if invalid_passengers:
             logger.warning(
