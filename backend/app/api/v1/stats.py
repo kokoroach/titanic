@@ -1,10 +1,7 @@
 from fastapi import APIRouter, HTTPException
 
-from app.core.cache import (
-    get_data_from_cache,
-    set_cache_data,
-)
 from app.application.stats_service import get_passenger_stats_by_data_point
+from app.core.cache import get_data_from_cache, set_cache_data
 
 STATS_PREFIX = "passenger:stats"
 

@@ -1,4 +1,5 @@
 from sqlalchemy import func, select, text
+
 from app.db.database import AsyncSession
 from app.db.models import PassengerModel
 
@@ -7,10 +8,7 @@ async def get_numeric_passenger_stats(column):
     _column = text(column)
     async with AsyncSession() as session:
         stmt = select(
-            func.min(_column),
-            func.max(_column),
-            func.avg(_column),
-            func.count(_column)
+            func.min(_column), func.max(_column), func.avg(_column), func.count(_column)
         ).select_from(PassengerModel)
 
         result = await session.execute(stmt)
@@ -40,5 +38,5 @@ async def get_nonnumeric_passenger_stats(column):
         return {
             "type": "categorical",
             "values": [{"value": r[0], "count": r[1]} for r in rows],
-            "unique_count": len(rows)
+            "unique_count": len(rows),
         }

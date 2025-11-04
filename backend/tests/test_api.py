@@ -26,7 +26,7 @@ def test_upload_csv():
             else:
                 logger.warning("Bad response:", response.text)
     except httpx.RequestError:
-        logger.error(f"An error occurred during the API request.", exc_info=True)
+        logger.error("An error occurred during the API request.", exc_info=True)
 
 
 def test_get_passengers():
