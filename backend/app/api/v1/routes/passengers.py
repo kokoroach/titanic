@@ -2,12 +2,12 @@ from typing import Dict, List
 
 from fastapi import APIRouter, File, HTTPException, UploadFile
 
-from app.application.service.passenger_service import upload_from_csv
 from app.application.cache import (
     delete_keys_having_prefix,
     get_data_from_cache,
     set_cache_data,
 )
+from app.application.service.passenger_service import upload_from_csv
 from app.core.logging import logger
 from app.db.passenger import get_all_passengers, get_passenger_by_id
 

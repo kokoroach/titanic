@@ -1,8 +1,8 @@
 import json
 from typing import Any, Dict
 
-from app.core.config import settings
 from app.core.cache import get_redis
+from app.core.config import settings
 
 
 async def delete_keys_having_prefix(prefix: str) -> None:

@@ -6,7 +6,7 @@ Ideally use Mock operation for offline check, where possible
 
 import pytest
 
-from app.core.cache import (
+from backend.app.core.cache import (
     close_redis,
     delete_keys_having_prefix,
     get_data_from_cache,

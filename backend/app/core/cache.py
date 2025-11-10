@@ -1,6 +1,6 @@
 import redis.asyncio as _redis
-from redis.exceptions import ConnectionError
 from redis.asyncio.client import Redis
+from redis.exceptions import ConnectionError
 
 from app.core.config import settings
 from app.core.logging import logger
