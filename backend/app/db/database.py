@@ -44,4 +44,4 @@ async def init_db() -> None:
 async def close_db() -> None:
     """Close DB connection"""
     await engine.dispose()
-    print("Database connection closed...")
+    logger.info("Database connection is closed...")
