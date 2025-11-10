@@ -45,7 +45,10 @@ async def lifespan(app: FastAPI) -> AsyncGenerator:
     await close_redis()
 
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(
+    title=settings.PROJECT_NAME,
+    lifespan=lifespan
+)
 
 # Set all CORS enabled origins
 if settings.all_cors_origins:
