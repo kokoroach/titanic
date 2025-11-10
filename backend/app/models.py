@@ -1,7 +1,8 @@
 from dataclasses import asdict, dataclass
 from re import compile
 
-from app.domain.exceptions import DataValidationError
+
+class DataValidationError(Exception): ...
 
 
 @dataclass

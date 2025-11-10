@@ -3,7 +3,7 @@ from pathlib import Path
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
-from app.core.config import DATABASE_URL
+from app.core.config import settings
 
 
 class Base(DeclarativeBase):
@@ -12,11 +12,12 @@ class Base(DeclarativeBase):
 
     All models should inherit from this Base
     """
+
     pass
 
 
 # Create an asynchronous SQLAlchemy engine. Example for aiosqlite engine
-engine = create_async_engine(DATABASE_URL, echo=True)
+engine = create_async_engine(str(settings.SQLALCHEMY_SQLITE_DB_URI), echo=True)
 AsyncSession = sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
 
 

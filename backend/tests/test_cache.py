@@ -3,9 +3,16 @@ Can only be ran when redis-client is running
 
 Ideally use Mock operation for offline check, where possible
 """
+
 import pytest
 
-from app.core.cache import init_redis, close_redis, set_cache_data, get_data_from_cache, delete_keys_having_prefix
+from app.core.cache import (
+    close_redis,
+    delete_keys_having_prefix,
+    get_data_from_cache,
+    init_redis,
+    set_cache_data,
+)
 
 
 @pytest.mark.asyncio

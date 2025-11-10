@@ -13,6 +13,8 @@ async def bulk_insert_passengers(passengers: List[dict]) -> int:
     Utility function to bulk insert passengers into the DB. It ignores
     duplicate on the primary key "passenger_id"
     """
+    inserted_rows = 0
+
     async with AsyncSession() as session:
         stmt = insert(PassengerModel).values(passengers)
         stmt = stmt.on_conflict_do_nothing(index_elements=["passenger_id"])
@@ -21,13 +23,13 @@ async def bulk_insert_passengers(passengers: List[dict]) -> int:
 
         inserted_rows = result.rowcount
         logger.info(f"Inserted {inserted_rows} passengers.")
-
-        return inserted_rows
+    return inserted_rows
 
 
 async def get_all_passengers() -> List[PassengerModel]:
     """Returns all passengers as list of PassengerModel instance"""
     passengers = []
+
     async with AsyncSession() as session:
         stmt = select(PassengerModel)
         result = await session.execute(stmt)
@@ -35,8 +37,10 @@ async def get_all_passengers() -> List[PassengerModel]:
     return passengers
 
 
-async def get_passenger_by_id(p_id: int) -> PassengerModel:
+async def get_passenger_by_id(p_id: int) -> PassengerModel | None:
     """Return a PassengerModel given some id."""
+    passenger = None
+
     async with AsyncSession() as session:
         stmt = select(PassengerModel).where(PassengerModel.passenger_id == p_id)
         result = await session.execute(stmt)

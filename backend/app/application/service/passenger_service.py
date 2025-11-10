@@ -5,8 +5,7 @@ from fastapi import File
 
 from app.core.logging import logger
 from app.db.passenger import bulk_insert_passengers
-from app.domain.exceptions import DataValidationError
-from app.domain.passenger import Passenger
+from app.models import DataValidationError, Passenger
 
 
 async def upload_from_csv(file: File) -> int:

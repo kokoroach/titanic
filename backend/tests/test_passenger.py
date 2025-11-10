@@ -1,5 +1,6 @@
 import pytest
-from app.domain.passenger import Passenger, DataValidationError
+
+from app.domain.passenger import DataValidationError, Passenger
 
 
 def test_passenger_from_dict_valid():
@@ -34,7 +35,7 @@ def test_passenger_from_dict_invalid():
         "PassengerId": "1",
         "Survived": "0",
         # Missing 'Pclass' key
-        "Name": 'Braund, Mr. Owen Harris',
+        "Name": "Braund, Mr. Owen Harris",
         "Sex": "male",
         "Age": "22",
         "SibSp": "1",

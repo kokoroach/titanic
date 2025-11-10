@@ -10,6 +10,7 @@ This module sets up the FastAPI application with:
 To run the app:
     uvicorn app.main:app --port 8001 --reload
 """
+
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
@@ -17,9 +18,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from uvicorn import run
 
-from app.api.v1.routers import v1_routers
+from app.api.main import api_router
 from app.core.cache import close_redis, init_redis
-from app.core.config import ALLOW_ORIGINS
+from app.core.config import settings
 from app.core.logging import logger
 from app.db.database import init_sqlite_db
 
@@ -47,14 +48,10 @@ async def lifespan(app: FastAPI) -> AsyncGenerator:
 app = FastAPI(lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=ALLOW_ORIGINS,
+    # allow_origins=ALLOW_ORIGINS,
 )
 
-
-# Setup up versioned API routers
-for router, prefix, tags in v1_routers:
-    app.include_router(router, prefix=f"/api{prefix}", tags=tags)
-
+app.include_router(api_router, prefix=settings.API_V1_PREFIX)
 
 if __name__ == "__main__":
     """
