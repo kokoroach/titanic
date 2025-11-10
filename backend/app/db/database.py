@@ -20,8 +20,10 @@ class Base(DeclarativeBase):
     pass
 
 
-async def _assert_db_connection():
-    """Checks that DB connection is okay."""
+async def _test_db_connection():
+    """Tests that DB connection is okay."""
+    # NOTE: This check does not truly work for SQLite as it creates the DB and
+    # initializes connection whne the DB does not exist.
     try:
         async with engine.connect() as conn:
             await conn.execute(text("SELECT 1"))
@@ -31,11 +33,11 @@ async def _assert_db_connection():
 
 
 async def init_db() -> None:
-    """Initialize DB connection"""
+    """Initialize Database"""
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
-    assert await _assert_db_connection()
+    assert await _test_db_connection()
     logger.info("Database initialized...")
 
 

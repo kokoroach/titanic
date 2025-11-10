@@ -19,7 +19,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from uvicorn import run
 
 from app.api.main import api_router
-from app.core.cache import close_redis, init_redis
+from app.core.cache import close_cache, init_cache
 from app.core.config import settings
 from app.core.logging import logger
 from app.db.database import close_db, init_db
@@ -34,13 +34,9 @@ async def lifespan(app: FastAPI) -> AsyncGenerator:
     """
     logger.info("Running pre-startup checks before running FastAPI")
     await init_db()
-    await init_redis()
-    # TODO:
-    # Run a migration check and update for updated models
+    # TODO: Run a migration check and update for updated models
     yield
     logger.info("Shutting down API application...")
-    # Post-process checks including potential graceful exit
-    await close_redis()
     await close_db()
 
 
