@@ -23,7 +23,7 @@ class Base(DeclarativeBase):
 async def _test_db_connection():
     """Tests that DB connection is okay."""
     # NOTE: This check does not truly work for SQLite as it creates the DB and
-    # initializes connection whne the DB does not exist.
+    # initializes connection when the DB does not exist.
     try:
         async with engine.connect() as conn:
             await conn.execute(text("SELECT 1"))
