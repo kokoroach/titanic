@@ -8,7 +8,7 @@ ch = logging.StreamHandler()
 ch.setLevel(logging.INFO)
 
 # Format
-formatter = logging.Formatter("[%(asctime)s] %(levelname)s in %(module)s: %(message)s")
+formatter = logging.Formatter("%(asctime)s %(levelname)s in %(module)s: %(message)s")
 ch.setFormatter(formatter)
 
 # Add handler to logger
