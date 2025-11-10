@@ -30,11 +30,11 @@ async def lifespan(app: FastAPI) -> AsyncGenerator:
     """
     Async context manager for FastAPI lifespan events.
 
-    It handles tasks before the app starts and after it shuts down:
+    It handles tasks before the app starts and after it shuts down.
     """
     logger.info("Running pre-startup checks before running FastAPI")
     # TODO: Uses SQLite for test purposes
-    # Use appropriate DB initialization. In this case, for SQLite
+    # TODO: Use appropriate DB initialization. In this case, for SQLite
     await init_sqlite_db()
     await init_redis()
     # TODO:
@@ -45,10 +45,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator:
     await close_redis()
 
 
-app = FastAPI(
-    title=settings.PROJECT_NAME,
-    lifespan=lifespan
-)
+app = FastAPI(title=settings.PROJECT_NAME, lifespan=lifespan)
 
 # Set all CORS enabled origins
 if settings.all_cors_origins:
