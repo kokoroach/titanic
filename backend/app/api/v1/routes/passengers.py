@@ -2,16 +2,11 @@ from typing import Dict, List
 
 from fastapi import APIRouter, File, HTTPException, UploadFile
 
-from app.application.cache import (
-    delete_keys_having_prefix,
-    get_data_from_cache,
-    set_cache_data,
-)
+from app.application.cache import cached, delete_keys_having_prefix
 from app.application.service.passenger_service import upload_from_csv
 from app.core.logging import logger
 from app.db.passenger import get_all_passengers, get_passenger_by_id
 
-REDIS_PREFIX = "passenger"
 router = APIRouter()
 
 
@@ -37,42 +32,23 @@ async def upload_csv(file: UploadFile = File(...)):
 
     # Reset cache if new data are inserted in the DB
     if inserted_passengers:
-        await delete_keys_having_prefix(prefix=REDIS_PREFIX)
+        await delete_keys_having_prefix(prefix="passenger")
 
 
 @router.get("/", status_code=200)
+@cached("passenger:all")
 async def get_passengers():
     """Return all of the titanic Passenger data"""
     # TODO: Implement pagination
-    redis_key = f"{REDIS_PREFIX}:all"
-
-    cached_data = await get_data_from_cache(redis_key)
-    if cached_data:
-        return cached_data
-
     passengers = await get_all_passengers()
     passengers: List[Dict] = [p.to_dict() for p in passengers]
-
-    # Set cache data
-    await set_cache_data(redis_key, passengers)
-
     return passengers
 
 
-@router.get("/{p_id}", status_code=200)
-async def get_passenger(p_id: int):
+@router.get("/{pass_id}", status_code=200)
+@cached("passenger:{pass_id}")
+async def get_passenger(pass_id: int):
     """Return the specified Passenger by its ID."""
-    redis_key = f"{REDIS_PREFIX}:{p_id}"
-
-    # Check cache
-    cached_data = await get_data_from_cache(redis_key)
-    if cached_data:
-        return cached_data
-
-    passenger = await get_passenger_by_id(p_id)
+    passenger = await get_passenger_by_id(pass_id)
     p = passenger.to_dict()
-
-    # Set cache data
-    await set_cache_data(redis_key, p)
-
     return p
