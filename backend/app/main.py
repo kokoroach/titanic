@@ -22,7 +22,7 @@ from app.api.main import api_router
 from app.core.cache import close_redis, init_redis
 from app.core.config import settings
 from app.core.logging import logger
-from app.db.database import init_sqlite_db
+from app.db.database import close_db, init_db
 
 
 @asynccontextmanager
@@ -33,9 +33,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator:
     It handles tasks before the app starts and after it shuts down.
     """
     logger.info("Running pre-startup checks before running FastAPI")
-    # TODO: Uses SQLite for test purposes
-    # TODO: Use appropriate DB initialization. In this case, for SQLite
-    await init_sqlite_db()
+    await init_db()
     await init_redis()
     # TODO:
     # Run a migration check and update for updated models
@@ -43,6 +41,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator:
     logger.info("Shutting down API application...")
     # Post-process checks including potential graceful exit
     await close_redis()
+    await close_db()
 
 
 app = FastAPI(title=settings.PROJECT_NAME, lifespan=lifespan)
